@@ -1,4 +1,4 @@
-package co.com.foodbank.pckage;
+package co.com.foodbank.packaged;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

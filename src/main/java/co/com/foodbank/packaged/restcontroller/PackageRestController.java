@@ -1,4 +1,4 @@
-package co.com.foodbank.pckage.restcontroller;
+package co.com.foodbank.packaged.restcontroller;
 
 import java.util.Collection;
 import java.util.Date;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import co.com.foodbank.pckage.exception.PackageNotFoundException;
-import co.com.foodbank.pckage.v1.controller.PackageController;
-import co.com.foodbank.pckage.v1.model.IPackage;
+import co.com.foodbank.packaged.exception.PackageNotFoundException;
+import co.com.foodbank.packaged.v1.controller.PackageController;
+import co.com.foodbank.packaged.v1.model.IPackage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

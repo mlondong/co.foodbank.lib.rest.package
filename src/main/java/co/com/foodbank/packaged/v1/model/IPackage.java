@@ -1,4 +1,4 @@
-package co.com.foodbank.pckage.v1.model;
+package co.com.foodbank.packaged.v1.model;
 
 import java.util.Collection;
 import java.util.Date;

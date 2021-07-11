@@ -1,4 +1,4 @@
-package co.com.foodbank.pckage.config;
+package co.com.foodbank.packaged.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

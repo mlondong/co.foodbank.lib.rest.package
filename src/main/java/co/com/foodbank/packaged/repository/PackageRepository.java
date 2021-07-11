@@ -1,11 +1,11 @@
-package co.com.foodbank.pckage.repository;
+package co.com.foodbank.packaged.repository;
 
 import java.util.Collection;
 import java.util.Date;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
-import co.com.foodbank.pckage.exception.PackageNotFoundException;
+import co.com.foodbank.packaged.exception.PackageNotFoundException;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.repository

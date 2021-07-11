@@ -1,4 +1,4 @@
-package co.com.foodbank.pckage.exception;
+package co.com.foodbank.packaged.exception;
 
 import java.util.Arrays;
 import java.util.List;

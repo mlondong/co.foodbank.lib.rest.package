@@ -1,4 +1,4 @@
-package co.com.foodbank.pckage.service;
+package co.com.foodbank.packaged.service;
 
 import java.util.Collection;
 import java.util.Date;
@@ -7,9 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import co.com.foodbank.pckage.exception.PackageNotFoundException;
-import co.com.foodbank.pckage.repository.PackageRepository;
-import co.com.foodbank.pckage.v1.model.IPackage;
+import co.com.foodbank.packaged.exception.PackageNotFoundException;
+import co.com.foodbank.packaged.repository.PackageRepository;
+import co.com.foodbank.packaged.v1.model.IPackage;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.service 11/07/2021

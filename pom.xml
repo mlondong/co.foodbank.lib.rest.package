@@ -12,10 +12,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>co.com.foodbank.package</groupId>
-	<artifactId>co.foodbank.lib.rest.package</artifactId>
+	<groupId>co.com.foodbank.packaged</groupId>
+	<artifactId>co.foodbank.lib.rest.packaged</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>co.foodbank.lib.rest.package</name>
+	<name>co.foodbank.lib.rest.packaged</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
