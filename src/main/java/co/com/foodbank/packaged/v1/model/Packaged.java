@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import co.com.foodbank.packaged.dto.IPackaged;
 import co.com.foodbank.product.dto.IProduct;
 
 /**

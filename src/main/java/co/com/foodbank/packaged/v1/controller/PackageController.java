@@ -6,9 +6,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import co.com.foodbank.packaged.dto.IPackaged;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.service.PackageService;
-import co.com.foodbank.packaged.v1.model.IPackaged;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.v1.controller

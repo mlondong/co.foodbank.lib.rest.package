@@ -78,13 +78,15 @@
 
 
 		<!-- DTOS -->
-		<dependency>
-			<groupId>co.com.foodbank.product</groupId>
-			<artifactId>co.foodbank.lib.dto.product</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<!-- DTOS -->
+		
 
+		<dependency>
+			<groupId>co.com.foodbank.packaged</groupId>
+			<artifactId>co.foodbank.lib.dto.packaged</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- DTOS -->
+
 
 	</dependencies>
 

@@ -7,9 +7,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import co.com.foodbank.packaged.dto.IPackaged;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.repository.PackageRepository;
-import co.com.foodbank.packaged.v1.model.IPackaged;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.service 11/07/2021
