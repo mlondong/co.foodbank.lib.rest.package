@@ -11,7 +11,7 @@ import co.com.foodbank.product.dto.IProduct;
  */
 
 @Document(collection = "Package")
-public class Package implements IPackage {
+public class Packaged implements IPackaged {
 
     @Id
     private String id;
@@ -22,7 +22,7 @@ public class Package implements IPackage {
     /**
      * Default constructor.
      */
-    public Package() {}
+    public Packaged() {}
 
 
     public void setId(String id) {

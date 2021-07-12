@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.repository.PackageRepository;
-import co.com.foodbank.packaged.v1.model.IPackage;
+import co.com.foodbank.packaged.v1.model.IPackaged;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.service 11/07/2021
@@ -33,8 +33,8 @@ public class PackageService {
      * @return {@code IPackage}
      * @throws PackageNotFoundException
      */
-    public IPackage findById(String id) throws PackageNotFoundException {
-        return modelMapper.map(repository.findById(id), IPackage.class);
+    public IPackaged findById(String id) throws PackageNotFoundException {
+        return modelMapper.map(repository.findById(id), IPackaged.class);
     }
 
 
@@ -45,10 +45,10 @@ public class PackageService {
      * @param date
      * @return {@code Collection<IPackage>}
      */
-    public Collection<IPackage> findByDate(Date date)
+    public Collection<IPackaged> findByDate(Date date)
             throws PackageNotFoundException {
         return repository.findByDate(date).stream()
-                .map(d -> modelMapper.map(d, IPackage.class))
+                .map(d -> modelMapper.map(d, IPackaged.class))
                 .collect(Collectors.toList());
     }
 
@@ -58,9 +58,9 @@ public class PackageService {
      * 
      * @return {@code Collection<IPackage>}
      */
-    public Collection<IPackage> findAll() throws PackageNotFoundException {
+    public Collection<IPackaged> findAll() throws PackageNotFoundException {
         return repository.findAll().stream()
-                .map(d -> modelMapper.map(d, IPackage.class))
+                .map(d -> modelMapper.map(d, IPackaged.class))
                 .collect(Collectors.toList());
     }
 

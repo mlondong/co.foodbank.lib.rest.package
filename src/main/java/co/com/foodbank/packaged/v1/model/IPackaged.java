@@ -7,7 +7,7 @@ import co.com.foodbank.product.dto.IProduct;
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.v1.model 11/07/2021
  */
-public interface IPackage {
+public interface IPackaged {
 
     String getId();
 

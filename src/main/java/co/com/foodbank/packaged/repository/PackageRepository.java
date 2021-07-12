@@ -6,15 +6,16 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
+import co.com.foodbank.packaged.v1.model.Packaged;
 
 /**
- * @author mauricio.londono@gmail.com co.com.foodbank.pckage.repository
+ * @author mauricio.londono@gmail.com co.com.foodbank.packaged.repository
  *         11/07/2021
  */
 @Repository
-public interface PackageRepository extends MongoRepository<Package, String> {
+public interface PackageRepository extends MongoRepository<Packaged, String> {
 
     @Query("{'date': ?0}")
-    Collection<Package> findByDate(Date date) throws PackageNotFoundException;
+    Collection<Packaged> findByDate(Date date) throws PackageNotFoundException;
 
 }

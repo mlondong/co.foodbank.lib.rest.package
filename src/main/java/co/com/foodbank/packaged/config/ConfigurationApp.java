@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = "co.com.foodbank.pckage")
+@ComponentScan(basePackages = "co.com.foodbank.packaged")
 public class ConfigurationApp {
 
     @Bean

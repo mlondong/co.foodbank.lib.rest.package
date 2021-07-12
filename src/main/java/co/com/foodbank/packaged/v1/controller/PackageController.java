@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.service.PackageService;
-import co.com.foodbank.packaged.v1.model.IPackage;
+import co.com.foodbank.packaged.v1.model.IPackaged;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.v1.controller
@@ -28,7 +28,7 @@ public class PackageController {
      * @param id
      * @return {@code IPackage}
      */
-    public IPackage findById(@NotBlank @NotNull String id)
+    public IPackaged findById(@NotBlank @NotNull String id)
             throws PackageNotFoundException {
         // TODO Auto-generated method stub
         return service.findById(id);
@@ -40,7 +40,7 @@ public class PackageController {
      * @param date
      * @return {@code Collection<IPackage>}
      */
-    public Collection<IPackage> findByDate(@NotBlank @NotNull Date date)
+    public Collection<IPackaged> findByDate(@NotBlank @NotNull Date date)
             throws PackageNotFoundException {
         // TODO Auto-generated method stub
         return service.findByDate(date);
@@ -52,7 +52,7 @@ public class PackageController {
      * 
      * @return {@code Collection<IPackage>}
      */
-    public Collection<IPackage> findAll() {
+    public Collection<IPackaged> findAll() {
         // TODO Auto-generated method stub
         return service.findAll();
     }

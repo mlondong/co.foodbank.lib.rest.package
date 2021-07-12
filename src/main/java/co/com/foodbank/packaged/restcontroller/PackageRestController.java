@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.v1.controller.PackageController;
-import co.com.foodbank.packaged.v1.model.IPackage;
+import co.com.foodbank.packaged.v1.model.IPackaged;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(value = "/package")
-@Tag(name = "Package", description = "the packaging API")
+@Tag(name = "Packaged", description = "the packaging API")
 @Validated
 public class PackageRestController {
 
@@ -54,7 +54,7 @@ public class PackageRestController {
                     @ApiResponse(responseCode = "400",
                             description = "Bad request.", content = @Content)})
     @GetMapping(value = "/findById/{id-package}")
-    public ResponseEntity<IPackage> findById(
+    public ResponseEntity<IPackaged> findById(
             @PathVariable("id-package") @NotBlank @NotNull String id)
             throws PackageNotFoundException {
         return ResponseEntity.status(HttpStatus.OK)
@@ -83,7 +83,7 @@ public class PackageRestController {
                     @ApiResponse(responseCode = "400",
                             description = "Bad request.", content = @Content)})
     @GetMapping(value = "/findByDate/{date}")
-    public ResponseEntity<Collection<IPackage>> findByDate(
+    public ResponseEntity<Collection<IPackaged>> findByDate(
             @PathVariable("date") @NotBlank @NotNull Date date)
             throws PackageNotFoundException {
         return ResponseEntity.status(HttpStatus.OK)
@@ -111,8 +111,8 @@ public class PackageRestController {
                             content = @Content),
                     @ApiResponse(responseCode = "400",
                             description = "Bad request.", content = @Content)})
-    @GetMapping(value = "/findById/{id-package}")
-    public ResponseEntity<Collection<IPackage>> findAll()
+    @GetMapping(value = "/findAll")
+    public ResponseEntity<Collection<IPackaged>> findAll()
             throws PackageNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(controller.findAll());
     }
