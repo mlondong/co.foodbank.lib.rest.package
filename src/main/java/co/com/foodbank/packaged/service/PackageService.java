@@ -60,6 +60,10 @@ public class PackageService {
 
     private final static String STOCK_WARNING = "Not All Stocks are udated.";
 
+    private final static String PRODUCT_REPETEAD_IN_STOCK =
+            "You have some products added, please remove and try to add another quantities.";
+
+
     private Long requiredValue = 0L;
 
     private Long currentValue = 0L;
@@ -167,7 +171,9 @@ public class PackageService {
             PackageErrorException {
 
 
-        Map<String, Item> currentItems = checkCurrentPackage(idPackaged);
+        Map<String, Item> currentItems = checkCurrentPackage(idPackaged, item);
+
+
         requiredValue = Long.valueOf(item.getQuantity());
 
         Map<String, Item> newItems = getItemsInProduct(item);
@@ -193,18 +199,40 @@ public class PackageService {
      * Method to check Packaged and get all items in a Map.
      * 
      * @param idPackaged
+     * @param item
      * @return {@code Map<String, Item>}
+     * @throws PackageErrorException
      */
-    private Map<String, Item> checkCurrentPackage(String idPackaged) {
-        IPackaged foundPackage = this.findById(idPackaged);
-        Collection<Item> foundItems = foundPackage.getProduct();
+    private Map<String, Item> checkCurrentPackage(String idPackaged,
+            ItemDTO item) throws PackageErrorException {
 
+        IPackaged foundPackage = this.findById(idPackaged);
+
+        Collection<Item> foundItems = foundPackage.getProduct();
         Map<String, Item> current = new HashMap<>();
         foundItems.stream().forEach(d -> {
             current.put(idPackaged, d);
         });
 
+
+        Collection<Item> repeteadItems = foundItems.stream()
+                .filter(d -> d.getProduct().getId()
+                        .equals(item.getProduct().getProduct()))
+                .collect(Collectors.toList());
+        if (!repeteadItems.isEmpty()) {
+            throw new PackageErrorException(showProduct(repeteadItems) + " "
+                    + PRODUCT_REPETEAD_IN_STOCK);
+        }
+
+
         return current;
+    }
+
+
+
+    private String showProduct(Collection<Item> repeteadItems) {
+        return repeteadItems.stream().map(d -> d.getProduct().getName())
+                .findFirst().get();
     }
 
 
