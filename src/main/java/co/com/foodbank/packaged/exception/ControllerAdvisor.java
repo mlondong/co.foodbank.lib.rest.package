@@ -15,6 +15,9 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import co.com.foodbank.stock.sdk.exception.SDKStockNotFoundException;
+import co.com.foodbank.stock.sdk.exception.SDKStockServiceNotAvailableException;
 
 
 /**
@@ -24,6 +27,51 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ControllerAdvisor {
 
+
+
+    /**
+     * Method to handle SDKStockNotFoundException
+     */
+    @ExceptionHandler(value = SDKStockNotFoundException.class)
+    public ResponseEntity<Object> handleSDKStockNotFoundException(
+            SDKStockNotFoundException ex) {
+
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,
+                ex.getLocalizedMessage(), ex.getMessage());
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(),
+                apiError.getStatus());
+    }
+
+
+    /**
+     * Method to handle BindException
+     */
+    @ExceptionHandler(
+            value = org.springframework.validation.BindException.class)
+    public ResponseEntity<Object> handleBindException(
+            org.springframework.validation.BindException ex) {
+
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,
+                ex.getLocalizedMessage(), ex.getMessage());
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(),
+                apiError.getStatus());
+    }
+
+
+
+    /**
+     * Method to handle SDKStockServiceNotAvailableException when the service
+     * Stock is off.
+     */
+    @ExceptionHandler(value = SDKStockServiceNotAvailableException.class)
+    public ResponseEntity<Object> handleSDKStockServiceNotAvailableException(
+            SDKStockServiceNotAvailableException ex) {
+
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getLocalizedMessage(), ex.getMessage());
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(),
+                apiError.getStatus());
+    }
 
 
     /**
@@ -75,6 +123,21 @@ public class ControllerAdvisor {
 
     }
 
+
+
+    /**
+     * Method to handle MethodArgumentTypeMismatchException.
+     */
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException ex) {
+
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,
+                ex.getLocalizedMessage(), ex.getMessage());
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(),
+                apiError.getStatus());
+
+    }
 
 
     /**

@@ -15,7 +15,7 @@ import co.com.foodbank.packaged.v1.model.Packaged;
 @Repository
 public interface PackageRepository extends MongoRepository<Packaged, String> {
 
-    @Query("{'date': ?0}")
+    @Query("{'datePackage': { '$lt' : ?0 }}")
     Collection<Packaged> findByDate(Date date) throws PackageNotFoundException;
 
 }
