@@ -5,7 +5,7 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import co.com.foodbank.packaged.dto.IPackaged;
-import co.com.foodbank.product.dto.IProduct;
+import co.com.foodbank.packaged.item.Item;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.v1.model 11/07/2021
@@ -16,7 +16,7 @@ public class Packaged implements IPackaged {
 
     @Id
     private String id;
-    private Collection<IProduct> product;
+    private Collection<Item> item;
     private Long units;
     private Date datePackage;
 
@@ -30,8 +30,8 @@ public class Packaged implements IPackaged {
         this.id = id;
     }
 
-    public void setProduct(Collection<IProduct> product) {
-        this.product = product;
+    public void setProduct(Collection<Item> product) {
+        this.item = product;
     }
 
     public void setUnits(Long units) {
@@ -48,8 +48,8 @@ public class Packaged implements IPackaged {
     }
 
     @Override
-    public Collection<IProduct> getProduct() {
-        return product;
+    public Collection<Item> getProduct() {
+        return item;
     }
 
     @Override

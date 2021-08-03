@@ -78,14 +78,22 @@
 
 
 		<!-- DTOS -->
-		
-
 		<dependency>
 			<groupId>co.com.foodbank.packaged</groupId>
 			<artifactId>co.foodbank.lib.dto.packaged</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
 		<!-- DTOS -->
+
+
+		<!-- SDKs -->
+		<dependency>
+			<groupId>co.com.foodbank.stock</groupId>
+			<artifactId>co.foodbank.lib.sdk.stock</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- SDKs -->
 
 
 	</dependencies>
@@ -100,7 +108,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 				</configuration>

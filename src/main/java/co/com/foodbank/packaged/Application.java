@@ -5,8 +5,10 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import co.com.foodbank.stock.sdk.config.EnableStockSDK;
 
 @SpringBootApplication
+@EnableStockSDK
 @ComponentScan({"co.com.foodbank.packaged", "co.com.foodbank.packaged.config",
         "co.com.foodbank.packaged.exception",
         "co.com.foodbank.packaged.repository",
