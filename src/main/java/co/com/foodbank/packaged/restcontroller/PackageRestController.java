@@ -28,7 +28,6 @@ import co.com.foodbank.packaged.exception.PackageErrorException;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.v1.controller.PackageController;
 import co.com.foodbank.packaged.v1.model.Packaged;
-import co.com.foodbank.product.dto.ProductPK;
 import co.com.foodbank.stock.sdk.exception.SDKStockNotFoundException;
 import co.com.foodbank.stock.sdk.exception.SDKStockServiceException;
 import co.com.foodbank.stock.sdk.exception.SDKStockServiceIllegalArgumentException;
@@ -60,6 +59,12 @@ public class PackageRestController {
      * @param id
      * @return {@code ResponseEntity<IPackaged>}
      * @throws PackageErrorException
+     * @throws SDKStockNotFoundException
+     * @throws SDKStockServiceIllegalArgumentException
+     * @throws SDKStockServiceException
+     * @throws JsonProcessingException
+     * @throws SDKStockServiceNotAvailableException
+     * @throws JsonMappingException
      */
     @Operation(summary = "Remove Product in Package", description = "",
             tags = {"packaged"})
@@ -77,11 +82,14 @@ public class PackageRestController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
-    public ResponseEntity<IPackaged> removeProduct(ProductPK idProduct,
-            @PathVariable("id-package") @NotNull @NotBlank String idPackaged)
-            throws PackageErrorException {
+    public ResponseEntity<IPackaged> removeProduct(
+            @PathVariable("id-package") @NotNull @NotBlank String idPackaged,
+            @RequestBody @Valid ItemDTO item) throws PackageErrorException,
+            JsonMappingException, SDKStockServiceNotAvailableException,
+            JsonProcessingException, SDKStockServiceException,
+            SDKStockServiceIllegalArgumentException, SDKStockNotFoundException {
         return new ResponseEntity<IPackaged>(
-                controller.removeProduct(idProduct, idPackaged), HttpStatus.OK);
+                controller.removeProduct(idPackaged, item), HttpStatus.OK);
     }
 
 
