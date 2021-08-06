@@ -81,15 +81,15 @@ public class PackageController {
 
 
     /**
-     * Method to update a Packaged
+     * Method to update state in Packaged
      * 
-     * @param dto
+     * @param option
+     * @param id
      * @return {@code IPackaged}
      */
-    public IPackaged update(@Valid PackagedDTO dto,
-            @NotNull @NotBlank String id) throws PackageErrorException {
-        // TODO Auto-generated method stub
-        return service.update(dto, id);
+    public IPackaged updateState(String option, @NotNull @NotBlank String id)
+            throws PackageErrorException {
+        return service.update(option, id);
     }
 
 

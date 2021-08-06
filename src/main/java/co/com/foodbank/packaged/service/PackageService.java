@@ -28,6 +28,10 @@ import co.com.foodbank.packaged.exception.PackageErrorException;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.item.Item;
 import co.com.foodbank.packaged.repository.PackageRepository;
+import co.com.foodbank.packaged.util.ParametersPackaged;
+import co.com.foodbank.packaged.v1.model.ClosePackaged;
+import co.com.foodbank.packaged.v1.model.IStatePackaged;
+import co.com.foodbank.packaged.v1.model.OpenPackaged;
 import co.com.foodbank.packaged.v1.model.Packaged;
 import co.com.foodbank.product.dto.ProductData;
 import co.com.foodbank.product.dto.ProductPK;
@@ -56,22 +60,6 @@ public class PackageService {
     @Qualifier("sdkStock")
     private SDKStockService sdkStock;
 
-
-    private final static String PRODUCT_NOT_FOUND = "Product Not Found";
-
-    private final static String PRODUCT_WITHOUT_EXISTENCE =
-            "Product withOut existence.";
-
-    private final static String STOCK_WARNING = "Not All Stocks are udated.";
-
-    private final static String PRODUCT_REPETEAD_IN_STOCK =
-            "You have some products added, please remove and try to add another quantities.";
-
-    private final static String PACKAGE_NOT_FOUND =
-            "Package Not Found, please check the information.";
-
-
-
     private Long requiredValue = 0L;
 
     private Long currentValue = 0L;
@@ -85,7 +73,8 @@ public class PackageService {
      */
     public IPackaged findById(String id) throws PackageNotFoundException {
         return repository.findById(id)
-                .orElseThrow(() -> new PackageNotFoundException(id));
+                .orElseThrow(() -> new PackageNotFoundException(
+                        ParametersPackaged.PACKAGE_NOT_FOUND + " " + id));
     }
 
 
@@ -126,37 +115,62 @@ public class PackageService {
      * @return {@code IPackaged}
      */
     public IPackaged create(PackagedDTO dto) throws PackageErrorException {
-
+        Collection<Item> items = new ArrayList<>();
         Packaged packaged = modelMapper.map(dto, Packaged.class);
-
+        packaged.setState(
+                checkOptionState(ParametersPackaged.OPEN_PACKAGE, packaged));
+        packaged.setItem(items);
         return repository.save(packaged);
     }
 
 
     /**
-     * Method to crate a Packaged
+     * Method to Update State in Packaged
      * 
+     * @param option
      * @param id
-     * @param dto
      * @throws PackageErrorException
      * @return {@code IPackaged}
      */
-    public IPackaged update(PackagedDTO dto, String id)
+    public IPackaged update(String option, String id)
             throws PackageErrorException {
 
         Packaged result = modelMapper.map(this.findById(id), Packaged.class);
-
         if (Objects.isNull(result)) {
             throw new PackageErrorException(id);
         }
-
-        result.setDatePackage(dto.getDatePackage());
-        result.setUnits(Long.valueOf(dto.getUnits()));
-
+        result.setState(checkOptionState(Integer.valueOf(option), result));
+        result.setDatePackage(new Date());
         return repository.save(result);
     }
 
 
+
+    /**
+     * Method to set the State in Packaged.
+     * 
+     * @param option
+     * @param _data
+     * @return {@code IStateContribution}
+     */
+    private IStatePackaged checkOptionState(int option, Packaged result) {
+
+        IStatePackaged state = null;
+
+        switch (option) {
+            case 1:
+                state = new OpenPackaged();
+                state.open(result);
+                break;
+
+            case 2:
+                state = new ClosePackaged();
+                state.close(result);
+                break;
+
+        }
+        return state;
+    }
 
     /**
      * Method to add products in package.
@@ -180,24 +194,24 @@ public class PackageService {
 
 
         Map<String, Item> currentItems = checkCurrentPackage(idPackaged, item);
-
-
         requiredValue = Long.valueOf(item.getQuantity());
 
         Map<String, Item> newItems = getItemsInProduct(item);
         currentItems.putAll(newItems);
 
         Collection<Item> onlyItems = currentItems.values();
-
         IPackaged result = saveAllItems(onlyItems, idPackaged);
         Collection<ResponseStockData> updated = updateStock(newItems);
 
         if (updated.size() != newItems.size()) {
             String er = newItems.keySet().stream()
                     .collect(Collectors.joining(" ; "));
-            throw new PackageErrorException(STOCK_WARNING + er);
+            throw new PackageErrorException(
+                    ParametersPackaged.STOCK_WARNING + er);
         }
 
+        requiredValue = 0L;
+        currentValue = 0L;
         return result;
     }
 
@@ -215,8 +229,14 @@ public class PackageService {
             ItemDTO item) throws PackageErrorException {
 
         IPackaged foundPackage = this.findById(idPackaged);
+        Packaged check = modelMapper.map(foundPackage, Packaged.class);
 
-        Collection<Item> foundItems = foundPackage.getProduct();
+        if (check.getState() instanceof ClosePackaged) {
+            throw new PackageErrorException(
+                    ParametersPackaged.PACKAGED_STATE_CLOSE);
+        }
+
+        Collection<Item> foundItems = foundPackage.getItem();
         Map<String, Item> current = new HashMap<>();
         foundItems.stream().forEach(d -> {
             current.put(idPackaged, d);
@@ -227,9 +247,10 @@ public class PackageService {
                 .filter(d -> d.getProduct().getId()
                         .equals(item.getProduct().getProduct()))
                 .collect(Collectors.toList());
+
         if (!repeteadItems.isEmpty()) {
             throw new PackageErrorException(showProduct(repeteadItems) + " "
-                    + PRODUCT_REPETEAD_IN_STOCK);
+                    + ParametersPackaged.PRODUCT_REPETEAD_IN_STOCK);
         }
 
 
@@ -315,8 +336,10 @@ public class PackageService {
     private IPackaged saveAllItems(Collection<Item> items, String idPackaged) {
         Packaged packaged = new Packaged();
         packaged.setId(idPackaged);
+        packaged.setState(
+                checkOptionState(ParametersPackaged.OPEN_PACKAGE, packaged));
         packaged.setDatePackage(new Date());
-        packaged.setProduct(items);
+        packaged.setItem(items);
         packaged.setUnits(calculateUnits(items));
         return repository.save(packaged);
     }
@@ -357,7 +380,7 @@ public class PackageService {
 
         if (buildItemProd.isEmpty()) {
             throw new SDKStockNotFoundException(pkProduct(item.getProduct()),
-                    PRODUCT_NOT_FOUND);
+                    ParametersPackaged.PRODUCT_NOT_FOUND);
         }
 
         return buildItemProd;
@@ -382,7 +405,7 @@ public class PackageService {
 
         if (result.isEmpty()) {
             throw new SDKStockNotFoundException(pkProduct(product),
-                    PRODUCT_NOT_FOUND);
+                    ParametersPackaged.PRODUCT_NOT_FOUND);
         }
         return result;
     }
@@ -453,9 +476,6 @@ public class PackageService {
                     this.buildItem(d.getProduct(), d.getContribution(), val));
         });
 
-        requiredValue = 0L;
-        currentValue = 0L;
-
         return map;
     }
 
@@ -502,7 +522,7 @@ public class PackageService {
 
         if (candidates.isEmpty()) {
             throw new SDKStockNotFoundException(pkProduct(item.getProduct()),
-                    PRODUCT_WITHOUT_EXISTENCE);
+                    ParametersPackaged.PRODUCT_WITHOUT_EXISTENCE);
         }
 
         return candidates;
@@ -542,7 +562,7 @@ public class PackageService {
 
         IPackaged packaged = this.findById(idPackaged);
         List<Item> founded = filterProductInStock(item, idPackaged, packaged);
-        packaged.getProduct().remove(founded.get(0));
+        packaged.getItem().remove(founded.get(0));
         Packaged newPackage = modelMapper.map(packaged, Packaged.class);
         newPackage.setDatePackage(new Date());
         newPackage.setUnits(
@@ -599,7 +619,8 @@ public class PackageService {
 
 
     private List<Item> filterProductInStock(ItemDTO item, String idPackaged,
-            IPackaged packaged) throws SDKStockNotFoundException {
+            IPackaged packaged) throws SDKStockNotFoundException,
+            NullPointerException, SDKStockServiceException {
 
         Predicate<Item> filter1 = d -> d.getProduct().getId()
                 .equals(item.getProduct().getProduct());
@@ -608,15 +629,31 @@ public class PackageService {
         Predicate<Item> filter3 =
                 d -> d.getUnits().equals(Long.valueOf(item.getQuantity()));
 
-        List<Item> founded = packaged.getProduct().stream()
+        checkIsItemNull(packaged);
+
+        List<Item> founded = packaged.getItem().stream()
                 .filter(filter1.and(filter2.and(filter3)))
                 .collect(Collectors.toList());
 
         if (founded.isEmpty()) {
-            throw new SDKStockNotFoundException(PACKAGE_NOT_FOUND, idPackaged);
+            throw new SDKStockNotFoundException(
+                    ParametersPackaged.PACKAGE_NOT_FOUND, idPackaged);
         }
 
         return founded;
     }
+
+
+
+    private void checkIsItemNull(IPackaged packaged)
+            throws SDKStockServiceException {
+
+        if (Objects.isNull(packaged.getItem())) {
+            throw new SDKStockServiceException(
+                    ParametersPackaged.PACKAGED_ERROR);
+        }
+    }
+
+
 
 }

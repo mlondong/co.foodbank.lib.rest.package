@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import co.com.foodbank.stock.sdk.exception.SDKStockNotFoundException;
+import co.com.foodbank.stock.sdk.exception.SDKStockServiceException;
 import co.com.foodbank.stock.sdk.exception.SDKStockServiceNotAvailableException;
 
 
@@ -26,6 +27,36 @@ import co.com.foodbank.stock.sdk.exception.SDKStockServiceNotAvailableException;
  */
 @ControllerAdvice
 public class ControllerAdvisor {
+
+
+    /**
+     * Method to handle SDKStockServiceException
+     */
+    @ExceptionHandler(value = SDKStockServiceException.class)
+    public ResponseEntity<Object> handleSDKStockServiceException(
+            SDKStockServiceException ex) {
+
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getLocalizedMessage(), ex.getMessage());
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(),
+                apiError.getStatus());
+    }
+
+
+
+    /**
+     * Method to handle NullPointerException
+     */
+    @ExceptionHandler(value = NullPointerException.class)
+    public ResponseEntity<Object> handleNullPointerException(
+            NullPointerException ex) {
+
+
+        ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getLocalizedMessage(), ex.getMessage());
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(),
+                apiError.getStatus());
+    }
 
 
 

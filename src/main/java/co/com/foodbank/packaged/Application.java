@@ -15,7 +15,7 @@ import co.com.foodbank.stock.sdk.config.EnableStockSDK;
         "co.com.foodbank.packaged.restcontroller",
         "co.com.foodbank.packaged.service",
         "co.com.foodbank.packaged.v1.controller",
-        "co.com.foodbank.packaged.v1.model"})
+        "co.com.foodbank.packaged.util", "co.com.foodbank.packaged.v1.model"})
 @EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class})
 public class Application {
 

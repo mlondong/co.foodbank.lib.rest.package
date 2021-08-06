@@ -10,7 +10,6 @@ import co.com.foodbank.packaged.item.Item;
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.v1.model 11/07/2021
  */
-
 @Document(collection = "Package")
 public class Packaged implements IPackaged {
 
@@ -19,6 +18,7 @@ public class Packaged implements IPackaged {
     private Collection<Item> item;
     private Long units;
     private Date datePackage;
+    private IStatePackaged state;
 
     /**
      * Default constructor.
@@ -26,30 +26,22 @@ public class Packaged implements IPackaged {
     public Packaged() {}
 
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setProduct(Collection<Item> product) {
-        this.item = product;
-    }
-
-    public void setUnits(Long units) {
-        this.units = units;
-    }
-
-    public void setDatePackage(Date datePackage) {
-        this.datePackage = datePackage;
-    }
-
     @Override
     public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
-    public Collection<Item> getProduct() {
+    public Collection<Item> getItem() {
         return item;
+    }
+
+    public void setItem(Collection<Item> item) {
+        this.item = item;
     }
 
     @Override
@@ -57,9 +49,25 @@ public class Packaged implements IPackaged {
         return units;
     }
 
+    public void setUnits(Long units) {
+        this.units = units;
+    }
+
     @Override
     public Date getDatePackage() {
         return datePackage;
+    }
+
+    public void setDatePackage(Date datePackage) {
+        this.datePackage = datePackage;
+    }
+
+    public IStatePackaged getState() {
+        return state;
+    }
+
+    public void setState(IStatePackaged state) {
+        this.state = state;
     }
 
 
