@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import co.com.foodbank.contribution.dao.ContributionData;
 import co.com.foodbank.contribution.dto.ContributionPK;
 import co.com.foodbank.packaged.dto.IPackaged;
 import co.com.foodbank.packaged.dto.ItemDTO;
@@ -26,6 +29,7 @@ import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.item.Item;
 import co.com.foodbank.packaged.repository.PackageRepository;
 import co.com.foodbank.packaged.v1.model.Packaged;
+import co.com.foodbank.product.dto.ProductData;
 import co.com.foodbank.product.dto.ProductPK;
 import co.com.foodbank.stock.dto.StockDTO;
 import co.com.foodbank.stock.sdk.exception.SDKStockNotFoundException;
@@ -62,6 +66,10 @@ public class PackageService {
 
     private final static String PRODUCT_REPETEAD_IN_STOCK =
             "You have some products added, please remove and try to add another quantities.";
+
+    private final static String PACKAGE_NOT_FOUND =
+            "Package Not Found, please check the information.";
+
 
 
     private Long requiredValue = 0L;
@@ -441,7 +449,8 @@ public class PackageService {
 
         candidates.stream().forEach(d -> {
             Long val = calculateQuantityForItem(Long.valueOf(d.getQuantity()));
-            map.put(d.getId(), this.buildItem(d, val));
+            map.put(d.getId(),
+                    this.buildItem(d.getProduct(), d.getContribution(), val));
         });
 
         requiredValue = 0L;
@@ -507,8 +516,8 @@ public class PackageService {
      * @param stock
      * @return {@code Item}
      */
-    private Item buildItem(ResponseStockData stock, Long units) {
-        return new Item(stock.getProduct(), stock.getContribution(), units);
+    private Item buildItem(ProductData prd, ContributionData ctr, Long units) {
+        return new Item(prd, ctr, units);
     }
 
 
@@ -516,17 +525,98 @@ public class PackageService {
     /**
      * Method to remove product.
      * 
-     * @param idProduct
      * @param idPackaged
+     * @param item
      * @return {@code IPackaged}
+     * @throws SDKStockNotFoundException
+     * @throws SDKStockServiceIllegalArgumentException
+     * @throws SDKStockServiceException
+     * @throws SDKStockServiceNotAvailableException
      */
 
-    public IPackaged removeProduct(String idPackaged, ProductPK idProduct) {
+    public IPackaged removeProduct(ItemDTO item,
+            @NotNull @NotBlank String idPackaged)
+            throws SDKStockNotFoundException,
+            SDKStockServiceNotAvailableException, SDKStockServiceException,
+            SDKStockServiceIllegalArgumentException {
 
-        /* SE CONSULTA SI EXISTE EL PRODUCTO */
-        /* SE ELIMINA EL PRODUCTO DEL STOCK */
-        /* SE ADICIONA LA CANTIDAD AL STOCK QUE SE RETIRO DEL PACKAGE */
-        return null;
+        IPackaged packaged = this.findById(idPackaged);
+        List<Item> founded = filterProductInStock(item, idPackaged, packaged);
+        packaged.getProduct().remove(founded.get(0));
+        Packaged newPackage = modelMapper.map(packaged, Packaged.class);
+        newPackage.setDatePackage(new Date());
+        newPackage.setUnits(
+                packaged.getUnits() - Long.valueOf(item.getQuantity()));
+
+        Packaged pk = repository.save(newPackage);
+        updateAnStock(item, packaged);
+
+        return pk;
+    }
+
+
+
+    /**
+     * Method to update an Stock, when discount units in packaged.
+     * 
+     * @param item
+     * @param packaged
+     * @return {@code ResponseStockData}
+     * @throws SDKStockNotFoundException
+     * @throws SDKStockServiceException
+     * @throws SDKStockServiceIllegalArgumentException
+     */
+    private ResponseStockData updateAnStock(ItemDTO item, IPackaged packaged)
+            throws SDKStockNotFoundException, SDKStockServiceException,
+            SDKStockServiceIllegalArgumentException {
+
+        Collection<ResponseStockData> stock = sdkStock.findStockByContribution(
+                item.getContribution().getContribution());
+
+        Predicate<ResponseStockData> filter1 = d -> d.getProduct().getId()
+                .equals(item.getProduct().getProduct());
+        Predicate<ResponseStockData> filter2 =
+                d -> d.getDateStock().before(packaged.getDatePackage());
+
+        ResponseStockData result =
+                stock.stream().filter(filter1.or(filter2)).findFirst().get();
+        return sdkStock.updateStock(result.getId(),
+                buildStockDTO(result, Long.valueOf(item.getQuantity())));
+    }
+
+
+
+    private StockDTO buildStockDTO(ResponseStockData result, Long quantity) {
+        StockDTO dto = new StockDTO();
+        dto.setContribution(
+                generateContributionPK(result.getContribution().getId()));
+        dto.setDateStock(new Date());
+        dto.setProduct(generateProductPK(result.getProduct().getId()));
+        dto.setQuantity(String.valueOf(result.getQuantity() + quantity));
+        return dto;
+    }
+
+
+
+    private List<Item> filterProductInStock(ItemDTO item, String idPackaged,
+            IPackaged packaged) throws SDKStockNotFoundException {
+
+        Predicate<Item> filter1 = d -> d.getProduct().getId()
+                .equals(item.getProduct().getProduct());
+        Predicate<Item> filter2 = d -> d.getContribution().getId()
+                .equals(item.getContribution().getContribution());
+        Predicate<Item> filter3 =
+                d -> d.getUnits().equals(Long.valueOf(item.getQuantity()));
+
+        List<Item> founded = packaged.getProduct().stream()
+                .filter(filter1.and(filter2.and(filter3)))
+                .collect(Collectors.toList());
+
+        if (founded.isEmpty()) {
+            throw new SDKStockNotFoundException(PACKAGE_NOT_FOUND, idPackaged);
+        }
+
+        return founded;
     }
 
 }

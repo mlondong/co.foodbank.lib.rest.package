@@ -15,7 +15,6 @@ import co.com.foodbank.packaged.dto.PackagedDTO;
 import co.com.foodbank.packaged.exception.PackageErrorException;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
 import co.com.foodbank.packaged.service.PackageService;
-import co.com.foodbank.product.dto.ProductPK;
 import co.com.foodbank.stock.sdk.exception.SDKStockNotFoundException;
 import co.com.foodbank.stock.sdk.exception.SDKStockServiceException;
 import co.com.foodbank.stock.sdk.exception.SDKStockServiceIllegalArgumentException;
@@ -121,13 +120,23 @@ public class PackageController {
     /**
      * Method to remove product.
      * 
-     * @param idProduct
      * @param idPackaged
+     * @param item
      * @return {@code IPackaged}
+     * @throws PackageErrorException
+     * @throws SDKStockNotFoundException
+     * @throws SDKStockServiceIllegalArgumentException
+     * @throws SDKStockServiceException
+     * @throws JsonProcessingException
+     * @throws SDKStockServiceNotAvailableException
+     * @throws JsonMappingException
      */
-    public IPackaged removeProduct(ProductPK idProduct,
-            @NotNull @NotBlank String idPackaged) {
-        return service.removeProduct(idPackaged, idProduct);
+    public IPackaged removeProduct(@NotNull @NotBlank String idPackaged,
+            @NotNull @NotBlank @Valid ItemDTO item) throws JsonMappingException,
+            SDKStockServiceNotAvailableException, JsonProcessingException,
+            SDKStockServiceException, SDKStockServiceIllegalArgumentException,
+            SDKStockNotFoundException, PackageErrorException {
+        return service.removeProduct(item, idPackaged);
     }
 
 }
