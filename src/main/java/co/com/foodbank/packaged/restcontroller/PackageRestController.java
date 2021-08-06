@@ -137,39 +137,6 @@ public class PackageRestController {
 
 
     /**
-     * Method to update Package.
-     * 
-     * @param dto
-     * @param id
-     * @return {@code ResponseEntity<IPackaged>}
-     * @throws PackageErrorException
-     */
-    @Operation(summary = "Update a Package", description = "",
-            tags = {"packaged"})
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201",
-                            description = "Packaged updated",
-                            content = @Content(schema = @Schema(
-                                    implementation = Packaged.class))),
-                    @ApiResponse(responseCode = "400",
-                            description = "Invalid input"),
-                    @ApiResponse(responseCode = "409",
-                            description = "Packaged already exists")})
-    @PutMapping(value = "/update/id/{id}",
-            consumes = {MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ResponseBody
-    public ResponseEntity<IPackaged> update(@RequestBody @Valid PackagedDTO dto,
-            @PathVariable("id") @NotNull @NotBlank String id)
-            throws PackageErrorException {
-        return new ResponseEntity<IPackaged>(controller.update(dto, id),
-                HttpStatus.OK);
-    }
-
-
-
-    /**
      * Method to create a Package.
      * 
      * @param dto
