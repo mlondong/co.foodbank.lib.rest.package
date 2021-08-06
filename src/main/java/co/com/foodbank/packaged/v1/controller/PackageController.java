@@ -82,6 +82,20 @@ public class PackageController {
 
 
     /**
+     * Method to update state in Packaged
+     * 
+     * @param option
+     * @param id
+     * @return {@code IPackaged}
+     */
+    public IPackaged updateState(String option, @NotNull @NotBlank String id)
+            throws PackageErrorException {
+        return service.update(option, id);
+    }
+
+
+
+    /**
      * Method to add products in package.
      * 
      * @param iProduct

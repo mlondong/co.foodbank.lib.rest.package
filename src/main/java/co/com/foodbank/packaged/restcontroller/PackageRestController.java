@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping(value = "/package")
+@RequestMapping(value = "/packaged")
 @Tag(name = "Packaged", description = "the packaging API")
 @Validated
 public class PackageRestController {
@@ -49,6 +50,40 @@ public class PackageRestController {
 
     @Autowired
     private PackageController controller;
+
+
+
+    /**
+     * Method to update State in Packaged.
+     * 
+     * @param id
+     * @param option
+     * @return {@code ResponseEntity<IPackaged>}
+     * @throws PackageErrorException
+     */
+    @Operation(summary = "Update only state in PAckaged: 1. Open, 2. Close.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200",
+                            description = "Updated Packaged",
+                            content = {
+                                    @Content(mediaType = "application/json")}),
+                    @ApiResponse(responseCode = "500",
+                            description = "Service not available.",
+                            content = @Content),
+                    @ApiResponse(responseCode = "400",
+                            description = "Bad request.", content = @Content)})
+    @GetMapping(value = "/updateState/id/{id}/option/{option}",
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<IPackaged> updateState(
+            @PathVariable("id") @NotNull @NotBlank String id,
+            @NotBlank @NotNull @PathVariable("option") @Pattern(
+                    regexp = "^[1-2]{1,1}$",
+                    message = "Option only between 1-2.") String option)
+            throws PackageErrorException {
+        return new ResponseEntity<IPackaged>(controller.updateState(option, id),
+                HttpStatus.OK);
+    }
 
 
 
