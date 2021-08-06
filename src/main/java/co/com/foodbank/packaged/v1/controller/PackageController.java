@@ -80,18 +80,6 @@ public class PackageController {
     }
 
 
-    /**
-     * Method to update a Packaged
-     * 
-     * @param dto
-     * @return {@code IPackaged}
-     */
-    public IPackaged update(@Valid PackagedDTO dto,
-            @NotNull @NotBlank String id) throws PackageErrorException {
-        // TODO Auto-generated method stub
-        return service.update(dto, id);
-    }
-
 
     /**
      * Method to add products in package.

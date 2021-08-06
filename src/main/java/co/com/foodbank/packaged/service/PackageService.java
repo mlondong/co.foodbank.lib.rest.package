@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
@@ -130,30 +129,6 @@ public class PackageService {
         Packaged packaged = modelMapper.map(dto, Packaged.class);
 
         return repository.save(packaged);
-    }
-
-
-    /**
-     * Method to crate a Packaged
-     * 
-     * @param id
-     * @param dto
-     * @throws PackageErrorException
-     * @return {@code IPackaged}
-     */
-    public IPackaged update(PackagedDTO dto, String id)
-            throws PackageErrorException {
-
-        Packaged result = modelMapper.map(this.findById(id), Packaged.class);
-
-        if (Objects.isNull(result)) {
-            throw new PackageErrorException(id);
-        }
-
-        result.setDatePackage(dto.getDatePackage());
-        result.setUnits(Long.valueOf(dto.getUnits()));
-
-        return repository.save(result);
     }
 
 
