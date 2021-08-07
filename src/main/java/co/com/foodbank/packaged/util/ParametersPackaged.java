@@ -14,7 +14,7 @@ public final class ParametersPackaged {
     public final static String PRODUCT_REPETEAD_IN_STOCK =
             "You have some products added, please remove and try to add another quantities.";
     public final static String PACKAGE_NOT_FOUND =
-            "Package Not Found, please check the information.";
+            "Package Not Found or information isn't correct, please check the information.";
     public final static String PACKAGED_STATE_CLOSE =
             "Packaged in state Close, you can't add items.";
     public final static String PACKAGED_ERROR =
