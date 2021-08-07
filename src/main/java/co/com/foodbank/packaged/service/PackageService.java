@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.validation.constraints.NotBlank;
@@ -472,8 +473,10 @@ public class PackageService {
 
         candidates.stream().forEach(d -> {
             Long val = calculateQuantityForItem(Long.valueOf(d.getQuantity()));
-            map.put(d.getId(),
-                    this.buildItem(d.getProduct(), d.getContribution(), val));
+            if (val > 0) {
+                map.put(d.getId(), this.buildItem(d.getProduct(),
+                        d.getContribution(), val));
+            }
         });
 
         return map;
@@ -493,7 +496,7 @@ public class PackageService {
             } else if (valItemBD > requiredValue) {
                 value = requiredValue;
                 currentValue += value;
-                requiredValue = 0L;
+                requiredValue -= currentValue;
             }
         }
 
