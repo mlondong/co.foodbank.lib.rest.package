@@ -4,8 +4,9 @@ import java.util.Collection;
 import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import co.com.foodbank.packaged.dto.IPackaged;
-import co.com.foodbank.packaged.item.Item;
+import co.com.foodbank.packaged.dto.interfaces.IPackaged;
+import co.com.foodbank.packaged.dto.item.Item;
+import co.com.foodbank.packaged.dto.state.IStatePackaged;
 
 /**
  * @author mauricio.londono@gmail.com co.com.foodbank.pckage.v1.model 11/07/2021

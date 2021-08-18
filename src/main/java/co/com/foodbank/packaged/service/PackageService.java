@@ -19,22 +19,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import co.com.foodbank.contribution.dao.ContributionData;
 import co.com.foodbank.contribution.dto.ContributionPK;
-import co.com.foodbank.packaged.dto.IPackaged;
+import co.com.foodbank.contribution.dto.response.ContributionData;
 import co.com.foodbank.packaged.dto.ItemDTO;
 import co.com.foodbank.packaged.dto.PackagedDTO;
+import co.com.foodbank.packaged.dto.interfaces.IPackaged;
+import co.com.foodbank.packaged.dto.item.Item;
+import co.com.foodbank.packaged.dto.state.ClosePackaged;
+import co.com.foodbank.packaged.dto.state.IStatePackaged;
+import co.com.foodbank.packaged.dto.state.OpenPackaged;
+import co.com.foodbank.packaged.dto.state.PackagedData;
 import co.com.foodbank.packaged.exception.PackageErrorException;
 import co.com.foodbank.packaged.exception.PackageNotFoundException;
-import co.com.foodbank.packaged.item.Item;
 import co.com.foodbank.packaged.repository.PackageRepository;
 import co.com.foodbank.packaged.util.ParametersPackaged;
-import co.com.foodbank.packaged.v1.model.ClosePackaged;
-import co.com.foodbank.packaged.v1.model.IStatePackaged;
-import co.com.foodbank.packaged.v1.model.OpenPackaged;
 import co.com.foodbank.packaged.v1.model.Packaged;
-import co.com.foodbank.product.dto.ProductData;
 import co.com.foodbank.product.dto.ProductPK;
+import co.com.foodbank.product.dto.request.ProductData;
 import co.com.foodbank.stock.dto.StockDTO;
 import co.com.foodbank.stock.sdk.exception.SDKStockNotFoundException;
 import co.com.foodbank.stock.sdk.exception.SDKStockServiceException;
@@ -161,17 +162,23 @@ public class PackageService {
         switch (option) {
             case 1:
                 state = new OpenPackaged();
-                state.open(result);
+                state.open(converToPackageData(result));
                 break;
 
             case 2:
                 state = new ClosePackaged();
-                state.close(result);
+                state.close(converToPackageData(result));
                 break;
 
         }
         return state;
     }
+
+    private PackagedData converToPackageData(Packaged result) {
+        return modelMapper.map(result, PackagedData.class);
+    }
+
+
 
     /**
      * Method to add products in package.
